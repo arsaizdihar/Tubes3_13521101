@@ -7,9 +7,16 @@ export default {
     extend: {
       colors: {
         gray: {
+          "700": "#40414F",
           "800": "#343541",
           "900": "#202123",
         },
+      },
+      fontFamily: {
+        soehne: [
+          "Söhne",
+          ...require("tailwindcss/defaultTheme").fontFamily.sans,
+        ],
       },
     },
   },
