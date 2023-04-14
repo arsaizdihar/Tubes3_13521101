@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
+import { useNewChat } from "~/hooks/useNewChat";
 import { getHistories } from "~/utils/api-client";
 import HistoryNav from "./HistoryNav";
 import NavButton from "./NavButton";
@@ -20,14 +21,13 @@ function Sidebar({ mobile }: { mobile?: boolean }) {
 function SidebarImpl() {
   const { data: histories } = useQuery(["histories"], getHistories);
   const router = useRouter();
+  const onNewChat = useNewChat();
   return (
     <div className="scrollbar-trigger flex h-full w-full flex-1 items-start border-white/20">
       <nav className="flex h-full flex-1 flex-col space-y-1 p-2">
         <button
           className="mb-1 flex flex-shrink-0 cursor-pointer items-center gap-3 rounded-md border border-white/20 px-3 py-3 text-sm text-white transition-colors duration-200 hover:bg-gray-500/10"
-          onClick={() => {
-            router.push("/");
-          }}
+          onClick={onNewChat}
         >
           <svg
             stroke="currentColor"

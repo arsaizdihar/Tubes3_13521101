@@ -1,4 +1,5 @@
 import { ChatHistory } from "@prisma/client";
+import { ApiChatMessage } from "./type";
 
 export async function postMessage({
   message,
@@ -32,4 +33,13 @@ export async function getHistories(): Promise<Array<ApiHistory>> {
   }
 
   return response.json().then((data) => data.histories);
+}
+
+export async function getChats(roomId: string): Promise<Array<ApiChatMessage>> {
+  const response = await fetch(`/api/${roomId}/message`);
+  if (!response.ok) {
+    throw new Error("Failed to get chats");
+  }
+
+  return response.json().then((data) => data.history);
 }

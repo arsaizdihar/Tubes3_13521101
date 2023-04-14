@@ -12,6 +12,10 @@ export default {
           "900": "#202123",
         },
       },
+      backgroundImage: {
+        "vert-bg-gradient":
+          "linear-gradient(180deg, rgba(53,55,64,0), #353740 58.85%)",
+      },
       fontFamily: {
         soehne: [
           "Söhne",
