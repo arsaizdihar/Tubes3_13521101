@@ -1,3 +1,6 @@
+import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/router";
+import { getHistories } from "~/utils/api-client";
 import HistoryNav from "./HistoryNav";
 import NavButton from "./NavButton";
 
@@ -15,10 +18,17 @@ function Sidebar({ mobile }: { mobile?: boolean }) {
 }
 
 function SidebarImpl() {
+  const { data: histories } = useQuery(["histories"], getHistories);
+  const router = useRouter();
   return (
     <div className="scrollbar-trigger flex h-full w-full flex-1 items-start border-white/20">
       <nav className="flex h-full flex-1 flex-col space-y-1 p-2">
-        <button className="mb-1 flex flex-shrink-0 cursor-pointer items-center gap-3 rounded-md border border-white/20 px-3 py-3 text-sm text-white transition-colors duration-200 hover:bg-gray-500/10">
+        <button
+          className="mb-1 flex flex-shrink-0 cursor-pointer items-center gap-3 rounded-md border border-white/20 px-3 py-3 text-sm text-white transition-colors duration-200 hover:bg-gray-500/10"
+          onClick={() => {
+            router.push("/");
+          }}
+        >
           <svg
             stroke="currentColor"
             fill="none"
@@ -38,8 +48,8 @@ function SidebarImpl() {
         </button>
         <div className="-mr-2 flex-1 flex-col overflow-y-auto border-b border-white/20">
           <div className="flex flex-col gap-2 pb-2 text-sm text-gray-100">
-            {Array.from({ length: 20 }, (_, i) => (
-              <HistoryNav key={i} />
+            {histories?.map((history) => (
+              <HistoryNav key={history.roomId} history={history} />
             ))}
           </div>
         </div>

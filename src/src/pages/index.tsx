@@ -1,4 +1,5 @@
-import { type NextPage } from "next";
+import cuid from "cuid";
+import { GetServerSideProps, type NextPage } from "next";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import Navbar from "~/components/Navbar";
@@ -7,6 +8,22 @@ import Sidebar from "~/components/Sidebar";
 const ChatSection = dynamic(() => import("~/components/ChatSection"), {
   ssr: false,
 });
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const { roomId } = ctx.query;
+  if (typeof roomId !== "string" || !cuid.isCuid(roomId)) {
+    const newRoomId = cuid();
+    return {
+      redirect: {
+        destination: `/?roomId=${newRoomId}`,
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {},
+  };
+};
 
 const Home: NextPage = () => {
   return (

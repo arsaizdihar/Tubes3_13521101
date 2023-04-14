@@ -1,9 +1,8 @@
 import { Dialog, Disclosure } from "@headlessui/react";
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import Sidebar from "./Sidebar";
 
 function Navbar() {
-  const [open, setOpen] = useState(false);
   return (
     <Disclosure as={Fragment}>
       {({ open, close }) => (

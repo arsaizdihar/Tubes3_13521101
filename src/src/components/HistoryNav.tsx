@@ -1,6 +1,9 @@
+import { useRouter } from "next/router";
+import { ApiHistory } from "~/utils/api-client";
 import NavButton from "./NavButton";
 
-function HistoryNav() {
+function HistoryNav({ history }: { history: ApiHistory }) {
+  const router = useRouter();
   return (
     <NavButton
       icon={
@@ -19,7 +22,10 @@ function HistoryNav() {
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
         </svg>
       }
-      text="History"
+      text={history.question}
+      onClick={() =>
+        router.push({ pathname: "/", search: `?roomId=${history.roomId}` })
+      }
     />
   );
 }
