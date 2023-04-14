@@ -1,6 +1,7 @@
 import { type NextPage } from "next";
 import dynamic from "next/dynamic";
 import Head from "next/head";
+import Navbar from "~/components/Navbar";
 import Sidebar from "~/components/Sidebar";
 
 const ChatSection = dynamic(() => import("~/components/ChatSection"), {
@@ -17,7 +18,10 @@ const Home: NextPage = () => {
       </Head>
       <main className="dark relative flex h-screen overflow-hidden bg-gray-800 font-soehne">
         <Sidebar />
-        <ChatSection />
+        <div className="flex h-full max-w-full flex-1 flex-col">
+          <Navbar />
+          <ChatSection />
+        </div>
       </main>
     </>
   );
