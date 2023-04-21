@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { Calculator } from "~/algorithm/calculator";
+import { Question } from "~/algorithm/question";
 import { createHandler } from "~/server/api-handler";
 import { prisma } from "~/server/db";
 
@@ -13,9 +15,16 @@ const roomIdSchema = z.string().cuid();
 handler.post(async (req, res) => {
   const { message } = postSchema.parse(req.body);
   const roomId = roomIdSchema.parse(req.query.roomId);
-
-  // TODO: run algorithm
-  const reply = message;
+  const calculator = new Calculator();
+  const question = new Question("KMP");
+  const algorithms = [calculator, question];
+  const algorithm = algorithms.find((algorithm) => algorithm.isMatch(message));
+  let reply: string;
+  if (!algorithm) {
+    reply = "Tidak mengerti maksud kamu :(";
+  } else {
+    reply = algorithm.getResponse(message);
+  }
 
   const newMessage = await prisma.chatHistory.create({
     data: {
