@@ -1,9 +1,8 @@
 import { z } from "zod";
-import { Calculator } from "~/algorithm/calculator";
-import { Question } from "~/algorithm/question";
 import { createHandler } from "~/server/api-handler";
 import { prisma } from "~/server/db";
-
+import { Calculator } from "src/algorithm/calculator";
+import { Question } from "~/algorithm/question";
 const handler = createHandler();
 
 const postSchema = z.object({
@@ -22,8 +21,16 @@ handler.post(async (req, res) => {
   let reply: string;
   if (!algorithm) {
     reply = "Tidak mengerti maksud kamu :(";
-  } else {
-    reply = algorithm.getResponse(message);
+  } 
+  else {
+    // input sesuai format calcu
+    if (/^[\d+\-*/^()?\s]+(\?)?$/.test(message)) {
+        const expression = message.replace(/\?/g, '');
+        reply = "Hasilnya adalah " + new Calculator().getResponse(expression).toString();
+    }    
+    else{
+      reply = algorithm.getResponse(message);
+    }
   }
 
   const newMessage = await prisma.chatHistory.create({
