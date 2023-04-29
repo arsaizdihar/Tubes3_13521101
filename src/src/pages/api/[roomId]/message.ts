@@ -29,8 +29,7 @@ handler.post(async (req, res) => {
    else {
     // Date Feature
     if (dateRegex.test(message)){
-      const expression = message.replace(/\?/g, '').replace(/\Hari apa /g, '');;
-      // console.log(expression);
+      const expression = message.replace(/\?/g, '').replace(/\Hari apa /g, '');
       reply = new DateQuestion().getResponse(expression).toString();
     }
      // Calculator Feature
