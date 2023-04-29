@@ -14,7 +14,6 @@ export class DateQuestion implements BaseAlgorithm {
     }
 
     else if (match) {
-      try {
         const year = parseInt(match[3] as string);
         const month = parseInt(match[2] as string) - 1; // subtract 1 to get zero-indexed month
         const day = parseInt(match[1] as string);
@@ -23,15 +22,11 @@ export class DateQuestion implements BaseAlgorithm {
           return ("Tanggal yang dimasukkan tidak sesuai");
         } else {
           const date = new Date(year, month, day);
-          const dayName = date.toLocaleString('en-US', { weekday: 'long' });
-          return("Hari itu adalah " + dayName);
+          const dayName = date.toLocaleString('id-ID', { weekday: 'long' });
+          return("Hari itu adalah hari " + dayName);
         }
-      } 
-    catch (error) {
-        return "Tanggal yang dimasukkan tidak sesuai";
-    }
-  } 
-  return "test2";
+    } 
+    return "Maaf, tanggal yang dimasukkan tidak sesuai.";
 }
 
   isMatch(input: string) {
