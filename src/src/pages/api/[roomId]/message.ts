@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { Calculator } from "~/algorithm/calculator";
+import { DateQuestion } from "~/algorithm/date";
 import { Question } from "~/algorithm/question";
 import { createHandler } from "~/server/api-handler";
 import { prisma } from "~/server/db";
@@ -19,11 +20,27 @@ handler.post(async (req, res) => {
   const question = new Question("KMP");
   const algorithms = [calculator, question];
   const algorithm = algorithms.find((algorithm) => algorithm.isMatch(message));
+  const dateRegex = /^(?:Hari apa )?(\d{1,2}\/\d{1,2}\/\d{4})\?$/;
+  const calcRegex = /^[\d+\-*/^()?\s]+(\?)?$/;
   let reply: string;
   if (!algorithm) {
     reply = "Tidak mengerti maksud kamu :(";
-  } else {
-    reply = algorithm.getResponse(message);
+  } 
+   else {
+    // Date Feature
+    if (dateRegex.test(message)){
+      const expression = message.replace(/\?/g, '').replace(/\Hari apa /g, '');;
+      // console.log(expression);
+      reply = new DateQuestion().getResponse(expression).toString();
+    }
+     // Calculator Feature
+    else if (calcRegex.test(message)) {
+         const expression = message.replace(/\?/g, '');
+         reply = "Hasilnya adalah " + new Calculator().getResponse(expression).toString();
+     }    
+     else{
+       reply = algorithm.getResponse(message);
+     }
   }
 
   const newMessage = await prisma.chatHistory.create({
