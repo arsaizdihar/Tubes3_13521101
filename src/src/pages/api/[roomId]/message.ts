@@ -1,8 +1,9 @@
+import { Calculator } from "src/algorithm/calculator";
 import { z } from "zod";
+import { DateQuestion } from "~/algorithm/date";
+import { Question } from "~/algorithm/question";
 import { createHandler } from "~/server/api-handler";
 import { prisma } from "~/server/db";
-import { Calculator } from "src/algorithm/calculator";
-import { Question } from "~/algorithm/question";
 const handler = createHandler();
 
 const postSchema = z.object({
@@ -18,19 +19,28 @@ handler.post(async (req, res) => {
   const question = new Question("KMP");
   const algorithms = [calculator, question];
   const algorithm = algorithms.find((algorithm) => algorithm.isMatch(message));
+  const dateRegex = /^(?:Hari apa )?(\d{1,2}\/\d{1,2}\/\d{4})\?$/;
+  const calcRegex = /^[\d+\-*/^()?\s]+(\?)?$/;
   let reply: string;
   if (!algorithm) {
     reply = "Tidak mengerti maksud kamu :(";
-  } 
-  else {
+  } else if (/^[\d+\-*/^()?\s]+(\?)?$/.test(message)) {
     // input sesuai format calcu
-    if (/^[\d+\-*/^()?\s]+(\?)?$/.test(message)) {
-        const expression = message.replace(/\?/g, '');
-        reply = "Hasilnya adalah " + new Calculator().getResponse(expression).toString();
-    }    
-    else{
-      reply = algorithm.getResponse(message);
-    }
+    const expression = message.replace(/\?/g, "");
+    reply =
+      "Hasilnya adalah " + new Calculator().getResponse(expression).toString();
+  } else if (dateRegex.test(message)) {
+    // Date Feature
+    const expression = message.replace(/\?/g, "").replace(/\Hari apa /g, "");
+    // console.log(expression);
+    reply = new DateQuestion().getResponse(expression).toString();
+  } else if (calcRegex.test(message)) {
+    // Calculator Feature
+    const expression = message.replace(/\?/g, "");
+    reply =
+      "Hasilnya adalah " + new Calculator().getResponse(expression).toString();
+  } else {
+    reply = algorithm.getResponse(message);
   }
 
   const newMessage = await prisma.chatHistory.create({
