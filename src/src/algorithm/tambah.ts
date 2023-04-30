@@ -1,8 +1,14 @@
-import { PrismaClient } from "@prisma/client";
+import { ChatStorage, PrismaClient } from "@prisma/client";
+import { StringMatching } from "./string";
 
 class Tambah {
-  private regex = /^Tambah pertanyaan (.+) dengan jawaban (.+)$/i;
-  constructor(private db: PrismaClient) {}
+  private regex = /^Tambah pertanyaan +(.+) dengan jawaban +(.+)$/i;
+  private _data: ChatStorage[] = [];
+  constructor(private db: PrismaClient, private algorithm: "KMP" | "BM") {}
+
+  set data(data: ChatStorage[]) {
+    this._data = data;
+  }
 
   isMatch(input: string) {
     return this.regex.test(input);
@@ -15,15 +21,15 @@ class Tambah {
     const question = match[1];
     const answer = match[2];
 
-    if (!question || !answer) {
-      console.log("Sintaks tidak sesuai");
-      return "Sintaks tidak sesuai";
-    }
-
     // check question already exists
-    const existingQuestion = await this.db.chatStorage.findFirst({
-      where: { question: question.trim() },
-    });
+    let existingQuestion: ChatStorage | null = null;
+    const matcher = new StringMatching(this.algorithm, question);
+    for (const q of this._data) {
+      if (matcher.check(q.question)) {
+        existingQuestion = q;
+        break;
+      }
+    }
 
     if (existingQuestion) {
       await this.db.chatStorage.update({

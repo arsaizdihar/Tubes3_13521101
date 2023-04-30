@@ -1,5 +1,6 @@
 import { ChatStorage } from "@prisma/client";
 import BaseAlgorithm from "./base";
+import { StringMatching } from "./string";
 
 export class Question implements BaseAlgorithm {
   private _data: ChatStorage[] = [];
@@ -14,57 +15,17 @@ export class Question implements BaseAlgorithm {
       return "Tidak mengerti maksud kamu :(";
     }
     let answer: string | null = null;
-    if (this.algorithm === "BM") {
-      answer = this.checkBM(input);
-    } else {
-      answer = this.checkKMP(input);
+    const matcher = new StringMatching(this.algorithm, input);
+    for (const { question, answer: qans } of this._data) {
+      if (matcher.check(question)) {
+        answer = qans;
+        break;
+      }
     }
     if (answer == null) {
       return this.checkLevenstein(input);
     }
     return answer ?? "Tidak mengerti maksud kamu :(";
-  }
-
-  checkKMP(input: string): string | null {
-    // Compute prefix table
-    const prefixTable = new Array(input.length).fill(0);
-
-    let i = 0;
-    for (let j = 1; j < input.length; j++) {
-      while (i > 0 && input.charAt(i) !== input.charAt(j)) {
-        i = prefixTable[i - 1];
-      }
-      if (input.charAt(i) === input.charAt(j)) {
-        i++;
-      }
-      prefixTable[j] = i;
-    }
-
-    // Substring Search
-    for (const { question, answer } of this._data) {
-      let j = 0;
-      let k = 0;
-
-      while (j < question.length) {
-        if (input.charAt(k) === question.charAt(j)) {
-          j++;
-          k++;
-        }
-        if (k === input.length) {
-          return answer;
-        } else if (
-          j < question.length &&
-          input.charAt(k) !== question.charAt(j)
-        ) {
-          if (k !== 0) {
-            k = prefixTable[k - 1];
-          } else {
-            j++;
-          }
-        }
-      }
-    }
-    return null;
   }
 
   checkBM(input: string): string | null {
@@ -95,10 +56,12 @@ export class Question implements BaseAlgorithm {
 
   checkLevenstein(input: string) {
     const result: Array<[ChatStorage, number]> = [];
+    input = input.toLowerCase();
 
     for (const q of this._data) {
       const d =
-        this.getLevensteinDistance(q.question, input) / q.question.length;
+        StringMatching.getLevensteinDistance(q.question.toLowerCase(), input) /
+        q.question.length;
       result.push([q, d]);
     }
     // sort by d ascending
@@ -114,37 +77,6 @@ export class Question implements BaseAlgorithm {
       "Pertanyaan tidak ditemukan di database. \nApakah maksud anda:\n" +
       strings.join("\n")
     );
-  }
-
-  getLevensteinDistance(a: string, b: string) {
-    const m = a.length;
-    const n = b.length;
-    const d = Array.from<number[], number[]>({ length: m + 1 }, () =>
-      new Array(n + 1).fill(0)
-    );
-    for (let i = 1; i <= m; i++) {
-      d[i][0] = i;
-    }
-
-    for (let j = 1; j <= n; j++) {
-      d[0][j] = j;
-    }
-
-    for (let j = 1; j <= n; j++) {
-      for (let i = 1; i <= m; i++) {
-        let substitionCost = 1;
-        if (a.charAt(i) === b.charAt(j)) {
-          substitionCost = 0;
-        }
-
-        d[i][j] = Math.min(
-          d[i - 1][j] + 1,
-          d[i][j - 1] + 1,
-          d[i - 1][j - 1] + substitionCost
-        );
-      }
-    }
-    return d[m][n];
   }
 
   isMatch(input: string) {

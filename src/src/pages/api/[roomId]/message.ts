@@ -22,12 +22,12 @@ handler.post(async (req, res) => {
   const calculator = new Calculator();
   const date = new DateQuestion();
   const question = new Question(reqAlg);
-  const tambah = new Tambah(prisma);
-  const hapus = new Hapus(prisma);
+  const tambah = new Tambah(prisma, reqAlg);
+  const hapus = new Hapus(prisma, reqAlg);
   const algorithms = [date, calculator, tambah, hapus, question];
   const algorithm = algorithms.find((algorithm) => algorithm.isMatch(message));
 
-  if (algorithm instanceof Question) {
+  if (algorithm && "data" in algorithm) {
     const storage = await prisma.chatStorage.findMany();
     algorithm.data = storage;
   }

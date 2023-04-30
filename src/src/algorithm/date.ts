@@ -2,11 +2,11 @@ import BaseAlgorithm from "./base";
 
 export class DateQuestion implements BaseAlgorithm {
   protected regex = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/;
-  protected checkRegex = /^(?:Hari apa )?(\d{1,2}\/\d{1,2}\/\d{4})\?$/;
+  protected checkRegex = /^(?:Hari apa )?(\d{1,2}\/\d{1,2}\/\d{4})(\?)?$/i;
   constructor() {}
 
   getResponse(input: string) {
-    input = input.replace(/\?/g, "").replace(/\Hari apa /g, "");
+    input = input.replace(/\?/g, "").replace(/\Hari apa /gi, "");
     //const expression = input.replace(/^(?:Hari apa )?(\d{1,2}\/\d{1,2}\/\d{4})\?$/, "");
     const match = this.regex.exec(input);
 
