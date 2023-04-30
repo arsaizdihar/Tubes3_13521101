@@ -8,15 +8,16 @@ const handler = createHandler();
 
 const postSchema = z.object({
   message: z.string(),
+  algorithm: z.enum(["KMP", "BM"]),
 });
 
 const roomIdSchema = z.string().cuid();
 
 handler.post(async (req, res) => {
-  const { message } = postSchema.parse(req.body);
+  const { message, algorithm: reqAlg } = postSchema.parse(req.body);
   const roomId = roomIdSchema.parse(req.query.roomId);
   const calculator = new Calculator();
-  const question = new Question("KMP");
+  const question = new Question(reqAlg);
   const algorithms = [calculator, question];
   const algorithm = algorithms.find((algorithm) => algorithm.isMatch(message));
   const dateRegex = /^(?:Hari apa )?(\d{1,2}\/\d{1,2}\/\d{4})\?$/;

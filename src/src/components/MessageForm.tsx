@@ -1,11 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
-import { useRef } from "react";
+import { useContext, useRef } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { ApiHistory, postMessage } from "~/utils/api-client";
 import { ApiChatMessage } from "~/utils/type";
+import { AlgorithmContext } from "./AlgorithmContext";
 
 function MessageForm() {
+  const [alg] = useContext(AlgorithmContext);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const queryClient = useQueryClient();
   const roomId = useRouter().query.roomId as string;
@@ -58,6 +60,9 @@ function MessageForm() {
         );
       }
     },
+    onError() {
+      alert("Gagal mengirim pesan");
+    },
   });
   return (
     <div className="absolute bottom-0 left-0 w-full border-t border-white/20 bg-gray-800 pb-6 pt-2 md:border-t-0 md:border-transparent md:bg-transparent md:bg-vert-bg-gradient">
@@ -72,11 +77,10 @@ function MessageForm() {
           const form = e.currentTarget;
           const formData = new FormData(form);
           const message = formData.get("message");
-          console.log(message);
           if (typeof message !== "string" || message.length === 0) {
             return;
           }
-          messageMutation.mutate({ roomId, message });
+          messageMutation.mutate({ roomId, message, algorithm: alg });
         }}
       >
         <div className="relative flex h-full flex-1 md:flex-col">

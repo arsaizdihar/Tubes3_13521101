@@ -1,9 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
+import clsx from "clsx";
 import { useRouter } from "next/router";
+import { useContext } from "react";
 import { useNewChat } from "~/hooks/useNewChat";
 import { getHistories } from "~/utils/api-client";
+import { AlgorithmContext } from "./AlgorithmContext";
 import HistoryNav from "./HistoryNav";
-import NavButton from "./NavButton";
 
 function Sidebar({ mobile }: { mobile?: boolean }) {
   if (mobile) {
@@ -20,6 +22,7 @@ function Sidebar({ mobile }: { mobile?: boolean }) {
 
 function SidebarImpl() {
   const { data: histories } = useQuery(["histories"], getHistories);
+  const [alg, setAlg] = useContext(AlgorithmContext);
   const router = useRouter();
   const onNewChat = useNewChat();
   return (
@@ -53,28 +56,31 @@ function SidebarImpl() {
             ))}
           </div>
         </div>
-        <NavButton
-          icon={
-            <svg
-              stroke="currentColor"
-              fill="none"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-4 w-4"
-              height="1em"
-              width="1em"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <polyline points="3 6 5 6 21 6"></polyline>
-              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-              <line x1="10" y1="11" x2="10" y2="17"></line>
-              <line x1="14" y1="11" x2="14" y2="17"></line>
-            </svg>
-          }
-          text="Clear conversations"
-        />
+        <h4 className="py-1 text-center text-xl font-medium text-white">
+          Algorithm
+        </h4>
+        <div className="flex flex-col space-y-3 pl-2">
+          <button
+            onClick={() => setAlg("KMP")}
+            type="button"
+            className={clsx(
+              "rounded-lg border border-gray-600 px-4 py-2 text-sm font-medium text-white hover:bg-gray-500 hover:text-white focus:z-10 focus:text-white focus:ring-2 focus:ring-blue-500",
+              alg === "KMP" ? "bg-gray-500" : "bg-gray-700"
+            )}
+          >
+            KMP
+          </button>
+          <button
+            onClick={() => setAlg("BM")}
+            type="button"
+            className={clsx(
+              "rounded-lg border border-gray-600 px-4 py-2 text-sm font-medium text-white hover:bg-gray-500 hover:text-white focus:z-10 focus:text-white focus:ring-2 focus:ring-blue-500",
+              alg === "BM" ? "bg-gray-500" : "bg-gray-700"
+            )}
+          >
+            BM
+          </button>
+        </div>
       </nav>
     </div>
   );

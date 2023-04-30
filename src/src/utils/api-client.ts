@@ -4,9 +4,11 @@ import { ApiChatMessage } from "./type";
 export async function postMessage({
   message,
   roomId,
+  algorithm,
 }: {
   message: string;
   roomId: string;
+  algorithm: "KMP" | "BM";
 }): Promise<ChatHistory> {
   const response = await fetch(`/api/${roomId}/message`, {
     method: "POST",
@@ -15,6 +17,7 @@ export async function postMessage({
     },
     body: JSON.stringify({
       message,
+      algorithm,
     }),
   });
   if (!response.ok) {
