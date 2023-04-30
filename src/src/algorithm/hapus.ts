@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, ChatStorage } from "@prisma/client";
 
 class Hapus {
   constructor(private db: PrismaClient) {}
@@ -16,21 +16,21 @@ class Hapus {
     }
 
     // Parse input to question
-    const question = input.slice(deleteQuestionPrefix.length).trim();
+    const pertanyaan = input.slice(deleteQuestionPrefix.length).trim();
 
     // Find question in database
-    const existingQuestion = await this.db.chatStorage.findFirst({ where: { question: question } });
+    const existingPertanyaan = await this.db.chatStorage.findFirst({ where: { question: pertanyaan } });
 
-    if (!existingQuestion) {
-      console.log(`Tidak ada pertanyaan ${question} pada database`);
-      return `Tidak ada pertanyaan ${question} pada database`;
+    if (!existingPertanyaan) {
+      console.log(`Tidak ada pertanyaan ${pertanyaan} pada database`);
+      return `Tidak ada pertanyaan ${pertanyaan} pada database`;
     }
 
     // hapus
     try {
-      await this.db.chatStorage.delete({ where: { id: existingQuestion.id } });
-      console.log(`Pertanyaan ${question} telah dihapus`);
-      return `Pertanyaan ${question} telah dihapus`;
+      await this.db.chatStorage.delete({ where: { id: existingPertanyaan.id } });
+      console.log(`Pertanyaan ${pertanyaan} telah dihapus`);
+      return `Pertanyaan ${pertanyaan} telah dihapus`;
     } catch (error) {
       console.error(error);
       return "Gagal menghapus pertanyaan";
