@@ -1,12 +1,11 @@
 import { Calculator } from "src/algorithm/calculator";
 import { z } from "zod";
 import { DateQuestion } from "~/algorithm/date";
+import Hapus from "~/algorithm/hapus";
 import { Question } from "~/algorithm/question";
+import Tambah from "~/algorithm/tambah";
 import { createHandler } from "~/server/api-handler";
 import { prisma } from "~/server/db";
-import Tambah from "~/algorithm/tambah";
-import { PrismaClient } from "@prisma/client";
-import Hapus from "~/algorithm/hapus";
 
 const handler = createHandler();
 
@@ -22,6 +21,8 @@ handler.post(async (req, res) => {
   const roomId = roomIdSchema.parse(req.query.roomId);
   const calculator = new Calculator();
   const question = new Question(reqAlg);
+  const tambah = new Tambah(prisma);
+  const hapus = new Hapus(prisma);
   const algorithms = [calculator, question];
   const algorithm = algorithms.find((algorithm) => algorithm.isMatch(message));
   const dateRegex = /^(?:Hari apa )?(\d{1,2}\/\d{1,2}\/\d{4})\?$/;
@@ -40,13 +41,11 @@ handler.post(async (req, res) => {
       "Hasilnya adalah " + new Calculator().getResponse(expression).toString();
   } else if (/^Tambah pertanyaan .* dengan jawaban .*/i.test(message)) {
     // tambah Feature
-    reply = await tambah.getResponse(message);  
-
+    reply = await tambah.getResponse(message);
   } else if (/^Hapus pertanyaan .*/i.test(message)) {
     // hapus Feature
     reply = await hapus.getResponse(message);
-  }  
-  else {
+  } else {
     reply = algorithm.getResponse(message);
   }
 
