@@ -1,0 +1,140 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-display: swap;
+  font-family: Signifier;
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://cdn.openai.com/common/fonts/signifier/signifier-light.woff2)
+    format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: Signifier;
+  font-style: italic;
+  font-weight: 400;
+  src: url(https://cdn.openai.com/common/fonts/signifier/signifier-light-italic.woff2)
+    format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: Signifier;
+  font-style: normal;
+  font-weight: 700;
+  src: url(https://cdn.openai.com/common/fonts/signifier/signifier-bold.woff2)
+    format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: Signifier;
+  font-style: italic;
+  font-weight: 700;
+  src: url(https://cdn.openai.com/common/fonts/signifier/signifier-bold-italic.woff2)
+    format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: Söhne;
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://cdn.openai.com/common/fonts/soehne/soehne-buch.woff2)
+    format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: Söhne;
+  font-style: italic;
+  font-weight: 400;
+  src: url(https://cdn.openai.com/common/fonts/soehne/soehne-buch-kursiv.woff2)
+    format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: Söhne;
+  font-style: normal;
+  font-weight: 700;
+  src: url(https://cdn.openai.com/common/fonts/soehne/soehne-halbfett.woff2)
+    format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: Söhne;
+  font-style: italic;
+  font-weight: 700;
+  src: url(https://cdn.openai.com/common/fonts/soehne/soehne-halbfett-kursiv.woff2)
+    format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: Söhne Mono;
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://cdn.openai.com/common/fonts/soehne/soehne-mono-buch.woff2)
+    format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: Söhne Mono;
+  font-style: normal;
+  font-weight: 700;
+  src: url(https://cdn.openai.com/common/fonts/soehne/soehne-mono-halbfett.woff2)
+    format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: Söhne Mono;
+  font-style: italic;
+  font-weight: 400;
+  src: url(https://cdn.openai.com/common/fonts/soehne/soehne-mono-buch-kursiv.woff2)
+    format("woff2");
+}
+
+::-webkit-scrollbar {
+  height: 1rem;
+  width: 0.5rem;
+}
+
+::-webkit-scrollbar:horizontal {
+  height: 0.5rem;
+  width: 1rem;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb {
+  --tw-bg-opacity: 1;
+  background-color: rgba(86, 88, 105, var(--tw-bg-opacity));
+  border-color: rgba(255, 255, 255, var(--tw-border-opacity));
+  border-radius: 9999px;
+  border-width: 1px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgba(172, 172, 190, var(--tw-bg-opacity));
+}
+
+@media (min-width: 768px) {
+  .scrollbar-trigger ::-webkit-scrollbar-thumb {
+    visibility: hidden;
+  }
+
+  .scrollbar-trigger:hover ::-webkit-scrollbar-thumb {
+    visibility: visible;
+  }
+}
