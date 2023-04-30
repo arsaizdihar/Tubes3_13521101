@@ -26,17 +26,17 @@ export class Question implements BaseAlgorithm {
   checkKMP(input: string): string | null {
     // Compute prefix table
     const prefixTable = new Array(input.length).fill(0);
-  
-      let i = 0;
-      for (let j = 1; j < input.length; j++) {
-        while (i > 0 && input.charAt(i) !== input.charAt(j)) {
-          i = prefixTable[i - 1];
-        }
-        if (input.charAt(i) === input.charAt(j)) {
-          i++;
-        }
-        prefixTable[j] = i;
+
+    let i = 0;
+    for (let j = 1; j < input.length; j++) {
+      while (i > 0 && input.charAt(i) !== input.charAt(j)) {
+        i = prefixTable[i - 1];
       }
+      if (input.charAt(i) === input.charAt(j)) {
+        i++;
+      }
+      prefixTable[j] = i;
+    }
 
     // Substring Search
     for (const { question, answer } of this._data) {
@@ -50,7 +50,10 @@ export class Question implements BaseAlgorithm {
         }
         if (k === input.length) {
           return answer;
-        } else if (j < question.length && input.charAt(k) !== question.charAt(j)) {
+        } else if (
+          j < question.length &&
+          input.charAt(k) !== question.charAt(j)
+        ) {
           if (k !== 0) {
             k = prefixTable[k - 1];
           } else {
@@ -94,13 +97,13 @@ export class Question implements BaseAlgorithm {
     for (const q of this._data) {
       const d =
         this.getLevensteinDistance(q.question, input) / q.question.length;
-      if (d <= 0.1) {
-        return q.answer;
-      }
       result.push([q, d]);
     }
     // sort by d ascending
     result.sort((a, b) => a[1] - b[1]);
+    if (result[0][1] <= 0.1) {
+      return result[0][0].answer;
+    }
     const strings: string[] = [];
     for (let i = 0; i < result.length && i < 3; i++) {
       strings.push(`${i + 1}. ${result[i][0].question}`);
