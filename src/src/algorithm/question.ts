@@ -23,6 +23,45 @@ export class Question implements BaseAlgorithm {
     return answer ?? "Tidak mengerti maksud kamu :(";
   }
 
+  checkKMP(input: string): string | null {
+    // Compute prefix table
+    const prefixTable = new Array(input.length).fill(0);
+  
+      let i = 0;
+      for (let j = 1; j < input.length; j++) {
+        while (i > 0 && input.charAt(i) !== input.charAt(j)) {
+          i = prefixTable[i - 1];
+        }
+        if (input.charAt(i) === input.charAt(j)) {
+          i++;
+        }
+        prefixTable[j] = i;
+      }
+
+    // Substring Search
+    for (const { question, answer } of this._data) {
+      let j = 0;
+      let k = 0;
+
+      while (j < question.length) {
+        if (input.charAt(k) === question.charAt(j)) {
+          j++;
+          k++;
+        }
+        if (k === input.length) {
+          return answer;
+        } else if (j < question.length && input.charAt(k) !== question.charAt(j)) {
+          if (k !== 0) {
+            k = prefixTable[k - 1];
+          } else {
+            j++;
+          }
+        }
+      }
+    }
+    return null;
+  }
+
   checkBM(input: string): string | null {
     for (const { question, answer } of this._data) {
       if (input.length > question.length) return null;

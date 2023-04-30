@@ -24,15 +24,9 @@ handler.post(async (req, res) => {
   let reply: string;
   if (!algorithm) {
     reply = "Tidak mengerti maksud kamu :(";
-  } else if (/^[\d+\-*/^()?\s]+(\?)?$/.test(message)) {
-    // input sesuai format calcu
-    const expression = message.replace(/\?/g, "");
-    reply =
-      "Hasilnya adalah " + new Calculator().getResponse(expression).toString();
   } else if (dateRegex.test(message)) {
     // Date Feature
     const expression = message.replace(/\?/g, "").replace(/\Hari apa /g, "");
-    // console.log(expression);
     reply = new DateQuestion().getResponse(expression).toString();
   } else if (calcRegex.test(message)) {
     // Calculator Feature
