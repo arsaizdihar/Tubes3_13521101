@@ -16,6 +16,8 @@ export class Question implements BaseAlgorithm {
     let answer: string | null = null;
     if (this.algorithm === "BM") {
       answer = this.checkBM(input);
+    } else {
+      answer = this.checkKMP(input);
     }
     if (answer == null) {
       return this.checkLevenstein(input);
