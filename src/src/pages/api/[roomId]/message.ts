@@ -4,6 +4,10 @@ import { DateQuestion } from "~/algorithm/date";
 import { Question } from "~/algorithm/question";
 import { createHandler } from "~/server/api-handler";
 import { prisma } from "~/server/db";
+import Tambah from "~/algorithm/tambah";
+import { PrismaClient } from "@prisma/client";
+import Hapus from "~/algorithm/hapus";
+
 const handler = createHandler();
 
 const postSchema = z.object({
@@ -34,7 +38,15 @@ handler.post(async (req, res) => {
     const expression = message.replace(/\?/g, "");
     reply =
       "Hasilnya adalah " + new Calculator().getResponse(expression).toString();
-  } else {
+  } else if (/^Tambah pertanyaan .* dengan jawaban .*/i.test(message)) {
+    // tambah Feature
+    reply = await tambah.getResponse(message);  
+
+  } else if (/^Hapus pertanyaan .*/i.test(message)) {
+    // hapus Feature
+    reply = await hapus.getResponse(message);
+  }  
+  else {
     reply = algorithm.getResponse(message);
   }
 
