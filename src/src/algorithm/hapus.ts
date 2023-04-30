@@ -1,25 +1,21 @@
-import { PrismaClient, ChatStorage } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 class Hapus {
+  private regex = /^Hapus pertanyaan (.+)/i;
   constructor(private db: PrismaClient) {}
 
   isMatch(input: string) {
-    const deleteQuestionPrefix = "Hapus pertanyaan ";
-    return input.toLowerCase().startsWith(deleteQuestionPrefix.toLowerCase());
+    return this.regex.test(input);
   }
 
   async getResponse(input: string) {
-    const deleteQuestionPrefix = "Hapus pertanyaan ";
-    if (!input.toLowerCase().startsWith(deleteQuestionPrefix.toLowerCase())) {
-      console.log("Sintaks tidak sesuai");
-      return "Sintaks tidak sesuai";
-    }
-
     // Parse input to question
-    const pertanyaan = input.slice(deleteQuestionPrefix.length).trim();
+    const pertanyaan = input.match(this.regex)![1];
 
     // Find question in database
-    const existingPertanyaan = await this.db.chatStorage.findFirst({ where: { question: pertanyaan } });
+    const existingPertanyaan = await this.db.chatStorage.findFirst({
+      where: { question: pertanyaan },
+    });
 
     if (!existingPertanyaan) {
       console.log(`Tidak ada pertanyaan ${pertanyaan} pada database`);
@@ -28,7 +24,9 @@ class Hapus {
 
     // hapus
     try {
-      await this.db.chatStorage.delete({ where: { id: existingPertanyaan.id } });
+      await this.db.chatStorage.delete({
+        where: { id: existingPertanyaan.id },
+      });
       console.log(`Pertanyaan ${pertanyaan} telah dihapus`);
       return `Pertanyaan ${pertanyaan} telah dihapus`;
     } catch (error) {

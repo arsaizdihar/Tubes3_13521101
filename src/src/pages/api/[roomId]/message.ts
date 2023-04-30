@@ -20,33 +20,23 @@ handler.post(async (req, res) => {
   const { message, algorithm: reqAlg } = postSchema.parse(req.body);
   const roomId = roomIdSchema.parse(req.query.roomId);
   const calculator = new Calculator();
+  const date = new DateQuestion();
   const question = new Question(reqAlg);
   const tambah = new Tambah(prisma);
   const hapus = new Hapus(prisma);
-  const algorithms = [calculator, question];
+  const algorithms = [date, calculator, tambah, hapus, question];
   const algorithm = algorithms.find((algorithm) => algorithm.isMatch(message));
-  const dateRegex = /^(?:Hari apa )?(\d{1,2}\/\d{1,2}\/\d{4})\?$/;
-  const calcRegex = /^[\d+\-*/^()?\s]+(\?)?$/;
+
+  if (algorithm instanceof Question) {
+    const storage = await prisma.chatStorage.findMany();
+    algorithm.data = storage;
+  }
+
   let reply: string;
   if (!algorithm) {
     reply = "Tidak mengerti maksud kamu :(";
-  } else if (dateRegex.test(message)) {
-    // Date Feature
-    const expression = message.replace(/\?/g, "").replace(/\Hari apa /g, "");
-    reply = new DateQuestion().getResponse(expression).toString();
-  } else if (calcRegex.test(message)) {
-    // Calculator Feature
-    const expression = message.replace(/\?/g, "");
-    reply =
-      "Hasilnya adalah " + new Calculator().getResponse(expression).toString();
-  } else if (/^Tambah pertanyaan .* dengan jawaban .*/i.test(message)) {
-    // tambah Feature
-    reply = await tambah.getResponse(message);
-  } else if (/^Hapus pertanyaan .*/i.test(message)) {
-    // hapus Feature
-    reply = await hapus.getResponse(message);
   } else {
-    reply = algorithm.getResponse(message);
+    reply = await algorithm.getResponse(message);
   }
 
   const newMessage = await prisma.chatHistory.create({

@@ -1,10 +1,11 @@
 import BaseAlgorithm from "./base";
 
 export class Calculator implements BaseAlgorithm {
+  private regex = /^[\d+\-*/^()?\s]+(\?)?$/;
   constructor() {}
 
   getResponse(input: string) {
-    const expression = input.replace(/[^\d+\-*/()\^?]/g, ""); 
+    const expression = input.replace(/[^\d+\-*/()\^?]/g, "");
 
     if (!/^\d+(?:[\+\-\*\/\^()\s]*\d+)*\s*[?]?$/.test(expression)) {
       return "Sintaks persamaan tidak sesuai";
@@ -13,14 +14,14 @@ export class Calculator implements BaseAlgorithm {
     try {
       // Evaluate the expression using eval()
       const result = eval(expression.replace(/\^/g, "**")); // Replace ^ with ** to use it as power operator
-      return result.toString(); 
+      return "Hasilnya adalah " + result.toString();
     } catch (error) {
       return "Sintaks persamaan tidak sesuai";
     }
   }
 
   isMatch(input: string) {
-    return  /^\d+(?:[\+\-\*\/\^()\s]*\d+)*\s*[?]?$/.test(input);
+    return this.regex.test(input);
   }
 }
 
