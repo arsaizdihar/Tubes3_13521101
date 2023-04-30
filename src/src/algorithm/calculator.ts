@@ -1,11 +1,11 @@
 import BaseAlgorithm from "./base";
 
 export class Calculator implements BaseAlgorithm {
-  private regex = /^[\d+\-*/^()?\s]+(\?)?$/;
+  private regex = /^[\d+\-*/^()\s]+(\?)?$/;
   constructor() {}
 
   getResponse(input: string) {
-    const expression = input.replace(/[^\d+\-*/()\^?]/g, "");
+    const expression = input.replace(/[^\d+\-*/()\^]/g, "");
 
     if (!/^\d+(?:[\+\-\*\/\^()\s]*\d+)*\s*[?]?$/.test(expression)) {
       return "Sintaks persamaan tidak sesuai";
