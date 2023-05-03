@@ -8,7 +8,7 @@ export class Calculator implements BaseAlgorithm {
   getResponse(input: string) {
     const expression = input.replace(/[^\d+\-*/()\^]/g, "");
 
-    if (!/^\d+(?:[\+\-\*\/\^()\s]*\d+)*\s*[?]?$/.test(expression)) {
+    if (!/^[\d+\-*/^()?\s]+(\?)?$/.test(expression)) {
       return "Sintaks persamaan tidak sesuai";
     }
 
