@@ -16,21 +16,21 @@ class Tambah {
 
   async getResponse(input: string) {
     const match = input.match(this.regex)!;
-
+  
     // Parse input to qna
-    const question = match[1];
+    const question = match[1].toLowerCase();
     const answer = match[2];
-
+  
     // check question already exists
     let existingQuestion: ChatStorage | null = null;
     const matcher = new StringMatching(this.algorithm, question);
     for (const q of this._data) {
-      if (matcher.check(q.question)) {
+      if (matcher.check(q.question.toLowerCase())) {
         existingQuestion = q;
         break;
       }
     }
-
+  
     if (existingQuestion) {
       await this.db.chatStorage.update({
         where: { id: existingQuestion.id },
@@ -41,7 +41,7 @@ class Tambah {
       );
       return `pertanyaan ${question} sudah ada! jawaban diupdate ke ${answer}`;
     }
-
+  
     // Add question and answer to database
     try {
       await this.db.chatStorage.create({
@@ -56,6 +56,7 @@ class Tambah {
       return "Gagal menambahkan pertanyaan";
     }
   }
+  
 }
 
 export default Tambah;
