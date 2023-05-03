@@ -4,6 +4,7 @@ import NavButton from "./NavButton";
 
 function HistoryNav({ history }: { history: ApiHistory }) {
   const router = useRouter();
+  const isActive = router.query.roomId === history.roomId;
   return (
     <NavButton
       icon={
@@ -22,6 +23,7 @@ function HistoryNav({ history }: { history: ApiHistory }) {
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
         </svg>
       }
+      isActive={isActive}
       text={history.question}
       onClick={() =>
         router.push({ pathname: "/", search: `?roomId=${history.roomId}` })
