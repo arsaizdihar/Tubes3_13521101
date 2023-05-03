@@ -1,14 +1,17 @@
 import BaseAlgorithm from "./base";
-
+import Decimal from 'decimal.js';
 export class Calculator implements BaseAlgorithm {
-  private regex = /^[\d+\-*/^()\s]+(\?)?$/;
+  // private regex = /^[\d+\-*/^()\s]+(\?)?$/;
+  private regex = /^[\d+.\-*/^()\s]+(\?)?$/;
+
 
   constructor() {}
 
   getResponse(input: string) {
-    const expression = input.replace(/[^\d+\-*/()\^]/g, "");
+    const expression = input.replace(/[^\d+\-*/()\^\.]/g, "");
+    
 
-    if (!/^[\d+\-*/^()?\s]+(\?)?$/.test(expression)) {
+    if (!/^[\d+\-*/^()?\s\.]+(\?)?$/.test(expression)) {
       return "Sintaks persamaan tidak sesuai";
     }
 
@@ -25,13 +28,19 @@ export class Calculator implements BaseAlgorithm {
   }
 
   private evaluate(expression: string) {
-    const tokens = expression.match(/(\d+)|([\+\-\*\/\^\(\)])/g) || [];
+    // const tokens = expression.match(/(\d+\.?\d*)|([\+\-\*\/\^\(\)])/g) || [];
+    const tokens = expression.match(/(\d+(\.\d+)?)|([\+\-\*\/\^\(\)])/g) || [];
+
     const opStack: string[] = [];
-    const valStack: number[] = [];
+    // const valStack: number[] = [];
+    const valStack: Array<number | string> = [];
+
 
     for (const token of tokens) {
-      if (/^\d+$/.test(token)) {
-        valStack.push(parseInt(token, 10));
+      // if (/^\d+$/.test(token)) {
+      if (/^\d+(\.\d+)?$/.test(token)) {
+        // valStack.push(parseFloat(token, 10));
+        valStack.push(parseFloat(token));
       } else if (token === '(') {
         opStack.push(token);
       } else if (token === ')') {
@@ -62,7 +71,7 @@ export class Calculator implements BaseAlgorithm {
       const result = this.operation(a, b, op as string);
       valStack.push(result);
     }
-    return valStack[0];
+    return parseFloat(valStack[0].toString()).toFixed(2);
   }
 
   private getPrecedence(operator: string) {
