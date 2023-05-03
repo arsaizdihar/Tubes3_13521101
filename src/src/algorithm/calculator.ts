@@ -8,7 +8,10 @@ export class Calculator implements BaseAlgorithm {
   getResponse(input: string) {
     const expression = input.replace(/[^\d+\-*/()\^.\s]/g, "");
 
-    if (!/^[\d+\-*/^()\s.]+(\?)?$/.test(expression) || /[\+\-*/^]{2,}/.test(expression)) {
+    if (
+      !/^[\d+\-*/^()\s.]+(\?)?$/.test(expression) ||
+      /[\+\-*/^]{2,}/.test(expression)
+    ) {
       return "Sintaks persamaan tidak sesuai";
     }
 
@@ -24,7 +27,7 @@ export class Calculator implements BaseAlgorithm {
         }
       }
       return "Sintaks persamaan tidak sesuai";
-    } 
+    }
   }
 
   isMatch(input: string) {
@@ -32,7 +35,8 @@ export class Calculator implements BaseAlgorithm {
   }
 
   private evaluate(expression: string) {
-    const tokens = expression.match(/(\d+(\.\d+)?|-\d+(\.\d+)?)|([\+\-\*\/\^\(\)])/g) || [];
+    const tokens =
+      expression.match(/(\d+(\.\d+)?|-\d+(\.\d+)?)|([\+\-\*\/\^\(\)])/g) || [];
 
     const opStack: string[] = [];
     const valStack: Array<number | string> = [];
@@ -40,10 +44,10 @@ export class Calculator implements BaseAlgorithm {
     for (const token of tokens) {
       if (/^\d+(\.\d+)?|-\d+(\.\d+)?$/.test(token)) {
         valStack.push(parseFloat(token));
-      } else if (token === '(') {
+      } else if (token === "(") {
         opStack.push(token);
-      } else if (token === ')') {
-        while (opStack[opStack.length - 1] !== '(') {
+      } else if (token === ")") {
+        while (opStack[opStack.length - 1] !== "(") {
           const op = opStack.pop();
           const b = valStack.pop() as number;
           const a = valStack.pop() as number;
@@ -52,11 +56,15 @@ export class Calculator implements BaseAlgorithm {
         }
         opStack.pop();
       } else {
-        while (opStack.length > 0 && this.getPrecedence(opStack[opStack.length - 1]) >= this.getPrecedence(token)) {
+        while (
+          opStack.length > 0 &&
+          this.getPrecedence(opStack[opStack.length - 1]) >=
+            this.getPrecedence(token)
+        ) {
           const op = opStack.pop();
           const b = valStack.pop() as number;
           const a = valStack.pop() as number;
-          if (op === '/' && b === 0) {
+          if (op === "/" && b === 0) {
             throw new Error("Hasilnya tidak terdefinisi");
           }
           const result = this.operation(a, b, op as string);
@@ -73,18 +81,23 @@ export class Calculator implements BaseAlgorithm {
       const result = this.operation(a, b, op as string);
       valStack.push(result);
     }
-    return parseFloat(valStack[0].toString()).toFixed(2);
+    const result = parseFloat(valStack[0].toString());
+    if (result % 1 === 0) {
+      return result;
+    } else {
+      return result.toFixed(2);
+    }
   }
 
   private getPrecedence(operator: string) {
     switch (operator) {
-      case '^':
+      case "^":
         return 3;
-      case '*':
-      case '/':
+      case "*":
+      case "/":
         return 2;
-      case '+':
-      case '-':
+      case "+":
+      case "-":
         return 1;
       default:
         return 0;
@@ -93,18 +106,18 @@ export class Calculator implements BaseAlgorithm {
 
   private operation(a: number, b: number, operator: string) {
     switch (operator) {
-      case '^':
+      case "^":
         return Math.pow(a, b);
-      case '*':
+      case "*":
         return a * b;
-      case '/':
+      case "/":
         if (b === 0) {
           throw new Error("Hasilnya tidak terdefinisi");
         }
         return a / b;
-      case '+':
+      case "+":
         return a + b;
-      case '-':
+      case "-":
         return a - b;
       default:
         throw new Error(`Invalid operator: ${operator}`);

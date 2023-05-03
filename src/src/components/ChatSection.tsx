@@ -33,7 +33,9 @@ function ChatSection() {
             {chats?.map((chat) => (
               <React.Fragment key={chat.id}>
                 <Chat message={chat.question} />
-                <Chat message={chat.answer} isBot />
+                {chat.answers.map((answer, idx) => (
+                  <Chat message={answer} key={idx} isBot />
+                ))}
               </React.Fragment>
             ))}
             {loadingMessage != null && (

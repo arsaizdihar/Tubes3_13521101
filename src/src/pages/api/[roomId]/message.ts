@@ -24,25 +24,37 @@ handler.post(async (req, res) => {
   const question = new Question(reqAlg);
   const tambah = new Tambah(prisma, reqAlg);
   const hapus = new Hapus(prisma, reqAlg);
-  const algorithms = [date, calculator, tambah, hapus, question];
-  const algorithm = algorithms.find((algorithm) => algorithm.isMatch(message));
+  const lines = message.split(/\n+/);
+  console.log(lines);
+  const responses: string[] = [];
+  let anyAlgorithmMatch = false;
+  for (const line of lines) {
+    const algorithms = [date, calculator, tambah, hapus, question];
+    const algorithm = algorithms.find((algorithm) => algorithm.isMatch(line));
 
-  if (algorithm && "data" in algorithm) {
-    const storage = await prisma.chatStorage.findMany();
-    algorithm.data = storage;
+    if (algorithm && "data" in algorithm) {
+      const storage = await prisma.chatStorage.findMany();
+      algorithm.data = storage;
+    }
+
+    let reply: string;
+    if (!algorithm) {
+      continue;
+    } else {
+      reply = await algorithm.getResponse(line);
+      if (reply) {
+        anyAlgorithmMatch = true;
+        responses.push(reply);
+      }
+    }
   }
-
-  let reply: string;
-  if (!algorithm) {
-    reply = "Tidak mengerti maksud kamu :(";
-  } else {
-    reply = await algorithm.getResponse(message);
+  if (!anyAlgorithmMatch) {
+    responses.push("Tidak mengerti maksud kamu :(");
   }
-
   const newMessage = await prisma.chatHistory.create({
     data: {
       question: message,
-      answer: reply,
+      answers: responses,
       roomId,
     },
   });
@@ -57,7 +69,7 @@ handler.get(async (req, res) => {
       roomId,
     },
     select: {
-      answer: true,
+      answers: true,
       question: true,
       createdAt: true,
       id: true,

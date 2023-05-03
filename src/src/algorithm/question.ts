@@ -12,7 +12,7 @@ export class Question implements BaseAlgorithm {
 
   getResponse(input: string) {
     if (!this._data.length) {
-      return "Tidak mengerti maksud kamu :(";
+      return "";
     }
     let answer: string | null = null;
     const matcher = new StringMatching(this.algorithm, input);
@@ -25,7 +25,7 @@ export class Question implements BaseAlgorithm {
     if (answer == null) {
       return this.checkLevenstein(input);
     }
-    return answer ?? "Tidak mengerti maksud kamu :(";
+    return answer ?? "";
   }
 
   checkBM(input: string): string | null {

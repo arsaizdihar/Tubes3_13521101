@@ -20,7 +20,7 @@ model ChatHistory {
     id        String   @id @default(cuid())
     roomId    String
     question  String
-    answer    String
+    answers   String[]
     createdAt DateTime @default(now())
 
     @@index([roomId])
