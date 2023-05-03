@@ -16,8 +16,15 @@ export class Calculator implements BaseAlgorithm {
       const result = this.evaluate(expression);
       return "Hasilnya adalah " + result.toString();
     } catch (error) {
+      if (error instanceof Error) {
+        if (error.message === "Hasilnya tidak terdefinisi") {
+          return "Hasilnya tidak terdefinisi";
+        } else {
+          return error.message;
+        }
+      }
       return "Sintaks persamaan tidak sesuai";
-    }
+    } 
   }
 
   isMatch(input: string) {
@@ -49,6 +56,9 @@ export class Calculator implements BaseAlgorithm {
           const op = opStack.pop();
           const b = valStack.pop() as number;
           const a = valStack.pop() as number;
+          if (op === '/' && b === 0) {
+            throw new Error("Hasilnya tidak terdefinisi");
+          }
           const result = this.operation(a, b, op as string);
           valStack.push(result);
         }
@@ -89,7 +99,7 @@ export class Calculator implements BaseAlgorithm {
         return a * b;
       case '/':
         if (b === 0) {
-          throw new Error("Divide by zero error");
+          throw new Error("Hasilnya tidak terdefinisi");
         }
         return a / b;
       case '+':
