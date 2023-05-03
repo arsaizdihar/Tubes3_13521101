@@ -1,17 +1,14 @@
 import BaseAlgorithm from "./base";
 
 export class Calculator implements BaseAlgorithm {
-  // private regex = /^[\d+\-*/^()\s]+(\?)?$/;
-  private regex = /^[\d+.\-*/^()\s]+(\?)?$/;
-
+  private regex = /^[\d+\-*/^().\s]+(\?)?$/;
 
   constructor() {}
 
   getResponse(input: string) {
-    const expression = input.replace(/[^\d+\-*/()\^\.]/g, "");
-    
+    const expression = input.replace(/[^\d+\-*/()\^.\s]/g, "");
 
-    if (!/^[\d+\-*/^()?\s\.]+(\?)?$/.test(expression)) {
+    if (!/^[\d+\-*/^()\s.]+(\?)?$/.test(expression) || /[\+\-*/^]{2,}/.test(expression)) {
       return "Sintaks persamaan tidak sesuai";
     }
 
@@ -28,18 +25,13 @@ export class Calculator implements BaseAlgorithm {
   }
 
   private evaluate(expression: string) {
-    // const tokens = expression.match(/(\d+\.?\d*)|([\+\-\*\/\^\(\)])/g) || [];
-    const tokens = expression.match(/(\d+(\.\d+)?)|([\+\-\*\/\^\(\)])/g) || [];
+    const tokens = expression.match(/(\d+(\.\d+)?|-\d+(\.\d+)?)|([\+\-\*\/\^\(\)])/g) || [];
 
     const opStack: string[] = [];
-    // const valStack: number[] = [];
     const valStack: Array<number | string> = [];
 
-
     for (const token of tokens) {
-      // if (/^\d+$/.test(token)) {
-      if (/^\d+(\.\d+)?$/.test(token)) {
-        // valStack.push(parseFloat(token, 10));
+      if (/^\d+(\.\d+)?|-\d+(\.\d+)?$/.test(token)) {
         valStack.push(parseFloat(token));
       } else if (token === '(') {
         opStack.push(token);
@@ -109,6 +101,3 @@ export class Calculator implements BaseAlgorithm {
     }
   }
 }
-
-// const calculator = new Calculator();
-// console.log(calculator.getResponse("1+1")); // Expected output: "2?"
