@@ -1,12 +1,16 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
-import { useContext, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { ApiHistory, postMessage } from "~/utils/api-client";
 import { ApiChatMessage } from "~/utils/type";
 import { AlgorithmContext } from "./AlgorithmContext";
 
-function MessageForm() {
+function MessageForm({
+  setLoadingMessage,
+}: {
+  setLoadingMessage: (message: string | null) => void;
+}) {
   const [alg] = useContext(AlgorithmContext);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const queryClient = useQueryClient();
@@ -44,16 +48,12 @@ function MessageForm() {
           (h) => h.roomId === data.roomId
         );
         if (historyIndex !== -1) {
-          newHistories[historyIndex] = {
-            ...newHistories[historyIndex]!,
-            question: data.question,
-          };
-        } else {
-          newHistories.unshift({
-            roomId: data.roomId,
-            question: data.question,
-          });
+          newHistories.splice(historyIndex, 1);
         }
+        newHistories.unshift({
+          roomId: data.roomId,
+          question: data.question,
+        });
         queryClient.setQueryData<Array<ApiHistory>>(
           ["histories"],
           newHistories
@@ -64,6 +64,14 @@ function MessageForm() {
       alert("Gagal mengirim pesan");
     },
   });
+  useEffect(() => {
+    if (messageMutation.variables && messageMutation.isLoading) {
+      setLoadingMessage(messageMutation.variables.message);
+    } else {
+      setLoadingMessage(null);
+    }
+  }, [messageMutation.variables, messageMutation.isLoading]);
+
   return (
     <div className="absolute bottom-0 left-0 w-full border-t border-white/20 bg-gray-800 pb-6 pt-2 md:border-t-0 md:border-transparent md:bg-transparent md:bg-vert-bg-gradient">
       <form

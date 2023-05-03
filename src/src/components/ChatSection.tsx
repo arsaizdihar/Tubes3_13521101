@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useState } from "react";
 import ScrollToBottom from "react-scroll-to-bottom";
 import { getChats } from "~/utils/api-client";
 import Chat from "./Chat";
@@ -8,6 +8,7 @@ import MessageForm from "./MessageForm";
 
 function ChatSection() {
   const roomId = useRouter().query.roomId as string;
+  const [loadingMessage, setLoadingMessage] = useState<string | null>(null);
 
   const { data: chats } = useQuery(
     ["messages", roomId],
@@ -16,6 +17,7 @@ function ChatSection() {
       enabled: !!roomId,
     }
   );
+
   return (
     <div className="relative flex h-full w-full flex-1 flex-col items-stretch overflow-hidden">
       <div className="flex-1 overflow-hidden">
@@ -34,12 +36,18 @@ function ChatSection() {
                 <Chat message={chat.answer} isBot />
               </React.Fragment>
             ))}
+            {loadingMessage != null && (
+              <>
+                <Chat message={loadingMessage} />
+                <Chat message="" isBot isLoading />
+              </>
+            )}
             {chats && chats.length && (
               <div className="h-32 w-full flex-shrink-0 md:h-48" />
             )}
           </div>
         </ScrollToBottom>
-        <MessageForm />
+        <MessageForm setLoadingMessage={setLoadingMessage} />
       </div>
     </div>
   );

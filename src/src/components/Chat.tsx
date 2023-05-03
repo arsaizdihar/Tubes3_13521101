@@ -1,6 +1,14 @@
 import clsx from "clsx";
 
-function Chat({ isBot, message }: { isBot?: boolean; message: string }) {
+function Chat({
+  isBot,
+  message,
+  isLoading,
+}: {
+  isBot?: boolean;
+  message: string;
+  isLoading?: boolean;
+}) {
   return (
     <div
       className={clsx(
@@ -51,7 +59,15 @@ function Chat({ isBot, message }: { isBot?: boolean; message: string }) {
             </div>
           )}
         </div>
-        <div className="relative flex min-h-[20px] flex-col items-start gap-4 whitespace-pre-wrap">
+        <div
+          className={clsx(
+            "relative flex min-h-[20px] flex-col items-start gap-4 whitespace-pre-wrap",
+            isLoading && "justify-center"
+          )}
+        >
+          {isLoading ? (
+            <span className="h-[60%] w-2 animate-pulse bg-white"></span>
+          ) : null}
           {message}
         </div>
       </div>
