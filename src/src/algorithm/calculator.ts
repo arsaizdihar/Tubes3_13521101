@@ -1,5 +1,5 @@
 import BaseAlgorithm from "./base";
-import Decimal from 'decimal.js';
+<!-- import Decimal from 'decimal.js'; -->
 export class Calculator implements BaseAlgorithm {
   // private regex = /^[\d+\-*/^()\s]+(\?)?$/;
   private regex = /^[\d+.\-*/^()\s]+(\?)?$/;
