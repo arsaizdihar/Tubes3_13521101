@@ -41,14 +41,16 @@ class Hapus {
           minDistance = [q, distance];
         }
       }
-      if (minDistance && minDistance[1] <= 0.1) {
-        existingPertanyaan = minDistance[0];
+      if (minDistance != null) {
+        return `Tidak ada pertanyaan ${pertanyaan} pada database\nMungkin maksud Anda pertanyaan '${minDistance[0].question}'`;
       }
+      return `Tidak ada pertanyaan ${pertanyaan} pada database`;
+      // if (minDistance && minDistance[1] <= 0.1) {
+      //   existingPertanyaan = minDistance[0];
+      // }
     }
 
-    if (!existingPertanyaan) {
-      return `Tidak ada pertanyaan ${pertanyaan} pada database`;
-    }
+    
 
     // hapus
     try {
