@@ -16,7 +16,7 @@ function Chat({
         isBot ? "bg-[#444654]" : "bg-gray-800"
       )}
     >
-      <div className="m-auto flex gap-4 p-4 text-base md:max-w-2xl md:gap-6 md:py-6 lg:max-w-xl lg:px-0 xl:max-w-3xl">
+      <div className="m-auto flex items-start gap-4 p-4 text-base md:max-w-2xl md:gap-6 md:py-6 lg:max-w-xl lg:px-0 xl:max-w-3xl">
         <div className="relative flex aspect-square w-[32px] flex-col items-end">
           {isBot ? (
             <div
