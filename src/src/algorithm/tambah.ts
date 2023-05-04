@@ -18,14 +18,14 @@ class Tambah {
     const match = input.match(this.regex)!;
   
     // Parse input to qna
-    const question = match[1].toLowerCase();
+    const question = match[1];
     const answer = match[2];
   
     // check question already exists
     let existingQuestion: ChatStorage | null = null;
     const matcher = new StringMatching(this.algorithm, question);
     for (const q of this._data) {
-      if (matcher.check(q.question.toLowerCase())) {
+      if (matcher.check(q.question)) {
         existingQuestion = q;
         break;
       }
@@ -34,7 +34,7 @@ class Tambah {
     if (existingQuestion) {
       await this.db.chatStorage.update({
         where: { id: existingQuestion.id },
-        data: { answer: answer.trim() },
+        data: { answer: answer.trim(), question: question.trim() },
       });
       console.log(
         `Pertanyaan ${question} sudah ada! Jawaban diupdate ke ${answer}`

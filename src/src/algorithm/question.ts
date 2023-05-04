@@ -80,6 +80,6 @@ export class Question implements BaseAlgorithm {
   }
 
   isMatch(input: string) {
-    return true;
+    return /[\w\W]+/.test(input);
   }
 }

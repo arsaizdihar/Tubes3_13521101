@@ -1,15 +1,15 @@
 export class StringMatching {
   private prefixTable: number[];
   constructor(private algorithm: "KMP" | "BM", private pattern: string) {
-    pattern = pattern.toLowerCase();
+    this.pattern = pattern.toLowerCase();
     this.prefixTable = new Array(pattern.length).fill(0);
     if (algorithm === "KMP") {
       let i = 0;
-      for (let j = 1; j < pattern.length; j++) {
-        while (i > 0 && pattern.charAt(i) !== pattern.charAt(j)) {
+      for (let j = 1; j < this.pattern.length; j++) {
+        while (i > 0 && this.pattern.charAt(i) !== this.pattern.charAt(j)) {
           i = this.prefixTable[i - 1];
         }
-        if (pattern.charAt(i) === pattern.charAt(j)) {
+        if (this.pattern.charAt(i) === this.pattern.charAt(j)) {
           i++;
         }
         this.prefixTable[j] = i;
