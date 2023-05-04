@@ -4,13 +4,7 @@ import Head from "next/head";
 
 import "~/styles/globals.css";
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: Infinity,
-    },
-  },
-});
+const queryClient = new QueryClient({});
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
