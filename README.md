@@ -46,6 +46,12 @@ Untuk windows:
 npm install
 ```
 
+3. Salin file .env.example dan rename menjadi .env
+
+Di dalam file .env, lengkapilah DATABASE_URL dengan sebuah tautam postgres connection string yang valid.
+
+Setup sudah selesai!
+
 ## How-to-Run
 
 Bagaimana cara menjalankan program? Gunakan command berikut pada folder src untuk menjalankan program utama
