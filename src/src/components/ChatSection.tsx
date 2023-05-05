@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import ScrollToBottom from "react-scroll-to-bottom";
 import { getChats } from "~/utils/api-client";
 import Chat, { TypingBotChats } from "./Chat";
+import HomeView from "./HomeView";
 import MessageForm from "./MessageForm";
 
 function ChatSection() {
@@ -23,13 +24,7 @@ function ChatSection() {
       <div className="flex-1 overflow-hidden">
         <ScrollToBottom className="h-full bg-gray-800">
           <div className="flex flex-col items-center bg-gray-800 text-sm">
-            {chats && !chats.length && loadingMessage == null && (
-              <div className="w-full px-6 text-gray-800 dark:text-gray-100 md:flex md:h-full md:max-w-2xl md:flex-col lg:max-w-3xl">
-                <h1 className="mb-10 ml-auto mr-auto mt-6 flex items-center justify-center gap-2 text-center text-4xl font-semibold sm:mb-16 sm:mt-[20vh]">
-                  ChitGPT
-                </h1>
-              </div>
-            )}
+            {chats && !chats.length && loadingMessage == null && <HomeView />}
             {chats?.map((chat) => (
               <React.Fragment key={chat.id}>
                 <Chat message={chat.question} />

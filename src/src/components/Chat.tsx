@@ -21,7 +21,7 @@ function Chat({
         <div className="relative flex aspect-square w-[32px] flex-col items-end">
           {isBot ? (
             <div
-              className="relative flex items-center justify-center rounded-sm p-1 text-white"
+              className="relative flex flex-shrink-0 items-center justify-center rounded-sm p-1 text-white"
               style={{
                 backgroundColor: "rgb(16, 163, 127)",
               }}
@@ -42,7 +42,7 @@ function Chat({
               </svg>
             </div>
           ) : (
-            <div className="relative flex h-full w-full items-center justify-center rounded-sm bg-gray-600">
+            <div className="relative flex h-full w-full flex-shrink-0 items-center justify-center rounded-sm bg-gray-600">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"

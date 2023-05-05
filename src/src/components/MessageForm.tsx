@@ -20,9 +20,6 @@ function MessageForm({
   const messageMutation = useMutation({
     mutationFn: postMessage,
     onSuccess(data, variables, context) {
-      if (inputRef.current) {
-        inputRef.current.value = "";
-      }
       const queryData = queryClient.getQueryData<Array<ApiChatMessage>>([
         "messages",
         variables.roomId,
@@ -61,7 +58,10 @@ function MessageForm({
         );
       }
     },
-    onError() {
+    onError(error, variables) {
+      if (inputRef.current) {
+        inputRef.current.value = variables.message;
+      }
       alert("Gagal mengirim pesan");
     },
   });
@@ -86,10 +86,17 @@ function MessageForm({
           const form = e.currentTarget;
           const formData = new FormData(form);
           const message = formData.get("message");
-          if (typeof message !== "string" || message.length === 0) {
+          if (typeof message !== "string" || !message.trim()) {
             return;
           }
-          messageMutation.mutate({ roomId, message, algorithm: alg });
+          if (inputRef.current) {
+            inputRef.current.value = "";
+          }
+          messageMutation.mutate({
+            roomId,
+            message: message.trim(),
+            algorithm: alg,
+          });
         }}
       >
         <div className="relative flex h-full flex-1 md:flex-col">

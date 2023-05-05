@@ -2,7 +2,7 @@ import { ChatStorage, PrismaClient } from "@prisma/client";
 import { StringMatching } from "./string";
 
 class Tambah {
-  private regex = /^Tambah pertanyaan +(.+) dengan jawaban +(.+)$/i;
+  private regex = /^Tambah(?:kan)? pertanyaan +(.+) dengan jawaban +(.+)$/i;
   private _data: ChatStorage[] = [];
   constructor(private db: PrismaClient, private algorithm: "KMP" | "BM") {}
 
@@ -16,11 +16,11 @@ class Tambah {
 
   async getResponse(input: string) {
     const match = input.match(this.regex)!;
-  
+
     // Parse input to qna
     const question = match[1];
     const answer = match[2];
-  
+
     // check question already exists
     let existingQuestion: ChatStorage | null = null;
     const matcher = new StringMatching(this.algorithm, question);
@@ -30,7 +30,7 @@ class Tambah {
         break;
       }
     }
-  
+
     if (existingQuestion) {
       await this.db.chatStorage.update({
         where: { id: existingQuestion.id },
@@ -39,9 +39,9 @@ class Tambah {
       console.log(
         `Pertanyaan ${question} sudah ada! Jawaban diupdate ke ${answer}`
       );
-      return `pertanyaan ${question} sudah ada! jawaban diupdate ke ${answer}`;
+      return `Pertanyaan ${question} sudah ada! jawaban diupdate ke ${answer}`;
     }
-  
+
     // Add question and answer to database
     try {
       await this.db.chatStorage.create({
@@ -50,13 +50,12 @@ class Tambah {
       console.log(
         `Pertanyaan ${question} ditambahkan dengan jawaban ${answer}`
       );
-      return "pertanyaan " + question + " telah ditambah";
+      return "Pertanyaan " + question + " telah ditambah";
     } catch (error) {
       console.error(error);
       return "Gagal menambahkan pertanyaan";
     }
   }
-  
 }
 
 export default Tambah;
