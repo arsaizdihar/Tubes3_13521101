@@ -30,6 +30,7 @@ function MessageForm({
       const historyQueryData = queryClient.getQueryData<Array<ApiHistory>>([
         "histories",
       ]);
+      (data as ApiChatMessage).isNew = true;
       if (queryData) {
         queryClient.setQueryData<Array<ApiChatMessage>>(
           ["messages", variables.roomId],

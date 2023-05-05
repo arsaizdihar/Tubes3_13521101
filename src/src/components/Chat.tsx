@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { useEffect, useState } from "react";
 
 function Chat({
   isBot,
@@ -59,19 +60,68 @@ function Chat({
             </div>
           )}
         </div>
-        <div
-          className={clsx(
-            "relative flex min-h-[20px] flex-col items-start gap-4 whitespace-pre-wrap",
-            isLoading && "justify-center"
-          )}
-        >
-          {isLoading ? (
-            <span className="h-[60%] w-2 animate-pulse bg-white"></span>
-          ) : null}
+        <div className={clsx("relative min-h-[20px] whitespace-pre-wrap")}>
           {message}
+          {isLoading ? (
+            <svg
+              viewBox="8 4 8 16"
+              xmlns="http://www.w3.org/2000/svg"
+              className="cursor inline"
+            >
+              <rect x="10" y="6" width="4" height="12" fill="#fff" />
+            </svg>
+          ) : null}
         </div>
       </div>
     </div>
+  );
+}
+
+export function TypingBotChat({
+  message,
+  onFinish,
+}: {
+  message: string;
+  onFinish: () => void;
+}) {
+  const [typedMessage, setTypedMessage] = useState("");
+
+  useEffect(() => {
+    let i = 0;
+
+    const intervalId = setInterval(() => {
+      setTypedMessage(message.slice(0, i));
+      i++;
+      if (i > message.length) {
+        clearInterval(intervalId);
+        onFinish();
+      }
+    }, 20);
+
+    return () => clearInterval(intervalId);
+  }, [message]);
+
+  return (
+    <Chat
+      message={typedMessage}
+      isBot
+      isLoading={typedMessage.length !== message.length}
+    />
+  );
+}
+
+export function TypingBotChats({ messages }: { messages: string[] }) {
+  const [index, setIndex] = useState(1);
+  return (
+    <>
+      {messages.slice(0, index).map((message, idx) => (
+        <TypingBotChat
+          key={idx}
+          message={message}
+          onFinish={() => setIndex((idx) => idx + 1)}
+        />
+      ))}
+    </>
   );
 }
 
