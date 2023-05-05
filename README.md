@@ -48,7 +48,7 @@ npm install
 
 ## How-to-Run
 
-Bagaimana cara menjalankan program? Gunakan command berikut pada folder program untuk menjalankan program utama
+Bagaimana cara menjalankan program? Gunakan command berikut pada folder src untuk menjalankan program utama
 
 ```
 npm run dev
