@@ -109,6 +109,10 @@ export class Calculator implements BaseAlgorithm {
       i++;
     }
 
+    if (opStack.length != valStack.length - 1) {
+      throw new Error("Sintaks persamaan tidak sesuai");
+    }
+
     while (opStack.length > 0) {
       const op = opStack.pop();
       const b = valStack.pop() as number;
@@ -118,8 +122,10 @@ export class Calculator implements BaseAlgorithm {
     }
 
     const result = parseFloat(valStack[0].toString());
-    if (result % 1 === 0 || (result > -1 && result < 1)) {
+    if (result % 1 === 0) {
       return result;
+    } else if (result > -1 && result < 1) {
+      return result.toFixed(1 - Math.floor(Math.log10(result)));
     } else {
       return Math.round((result + Number.EPSILON) * 100) / 100;
     }
