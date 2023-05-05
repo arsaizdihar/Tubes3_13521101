@@ -1,10 +1,14 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
-import { useContext, useEffect, useRef } from "react";
+import { RefObject, useContext, useEffect, useRef } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { ApiHistory, postMessage } from "~/utils/api-client";
 import { ApiChatMessage } from "~/utils/type";
 import { AlgorithmContext } from "./AlgorithmContext";
+
+export const inputRef: RefObject<HTMLTextAreaElement> = {
+  current: null,
+};
 
 function MessageForm({
   setLoadingMessage,
@@ -12,7 +16,6 @@ function MessageForm({
   setLoadingMessage: (message: string | null) => void;
 }) {
   const [alg] = useContext(AlgorithmContext);
-  const inputRef = useRef<HTMLTextAreaElement>(null);
   const queryClient = useQueryClient();
   const roomId = useRouter().query.roomId as string;
   const formRef = useRef<HTMLFormElement>(null);

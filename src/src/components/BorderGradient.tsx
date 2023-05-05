@@ -1,23 +1,24 @@
+import clsx from "clsx";
 import { ReactNode } from "react";
 
 function BorderGradient({
-  from,
-  to,
   children,
   className,
+  As = "div",
+  onClick,
 }: {
-  from: string;
-  to: string;
   children?: ReactNode;
   className?: string;
+  As?: "div" | "button";
+  onClick?: () => void;
 }) {
   return (
-    <div
-      style={{ background: `linear-gradient(to right, ${from}, ${to})` }}
-      className={className}
+    <As
+      className={clsx(className, "gradient bg-gradient-to-r bg-pos-0")}
+      onClick={onClick}
     >
       {children}
-    </div>
+    </As>
   );
 }
 
