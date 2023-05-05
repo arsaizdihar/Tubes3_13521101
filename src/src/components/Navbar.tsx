@@ -1,8 +1,10 @@
 import { Dialog, Disclosure } from "@headlessui/react";
 import { Fragment } from "react";
+import { useNewChat } from "~/hooks/useNewChat";
 import Sidebar from "./Sidebar";
 
 function Navbar() {
+  const onNewChat = useNewChat();
   return (
     <Disclosure as={Fragment}>
       {({ open, close }) => (
@@ -30,7 +32,7 @@ function Navbar() {
             <h1 className="flex-1 text-center text-base font-normal">
               New chat
             </h1>
-            <button type="button" className="px-3">
+            <button type="button" className="px-3" onClick={onNewChat}>
               <svg
                 stroke="currentColor"
                 fill="none"
