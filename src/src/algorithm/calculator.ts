@@ -35,8 +35,9 @@ export class Calculator implements BaseAlgorithm {
   }
 
   private evaluate(expression: string) {
+    expression = expression.replace(/(?<=[^\d\s])-/g, "+(-");
     const tokens =
-      (expression.replace(/(?<=[^\d\s])-/g, "+(-")).match(/(\d+(\.\d+)?|-\d+(\.\d+)?|-)|([\+\-\*\/\^\(\)])/g) || [];
+      (expression).match(/(\d+(\.\d+)?|-\d+(\.\d+)?|-)|([\+\-\*\/\^\(\)])/g) || [];
 
     const opStack: string[] = [];
     const valStack: Array<number | string> = [];
