@@ -1,4 +1,4 @@
-# Tubes2-mrKrrabs' Krusty Treasure
+# Tubes3-ChitGPT
  Project ini dibuat oleh Arsa Izdihar Islam (13521101), Vanessa Rebecca Wiyono (13521151), dan Alisha Listya Wardhani (13521171) yang merupakan salah satu pemenuhan Tugas Besar III IF2211 Strategi Algoritma:
 <h2 align="center">
   ChitGPT <br/>
