@@ -41,7 +41,6 @@ https://github.com/arsaizdihar/Tubes3_13521101.git
 
 2. Setelah masuk ke folder program, masuk ke folder src dan jalankan perintah berikut untuk compile program utama!
 
-Untuk windows:
 ```
 npm install
 ```
