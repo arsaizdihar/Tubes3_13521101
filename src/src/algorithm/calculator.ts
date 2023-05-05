@@ -91,7 +91,8 @@ export class Calculator implements BaseAlgorithm {
             opStack.length > 0 &&
             opStack[opStack.length - 1] !== "(" &&
             this.getPrecedence(opStack[opStack.length - 1]) >=
-              this.getPrecedence(token)
+              this.getPrecedence(token) &&
+            (opStack[opStack.length - 1] !== "^" || token !== "^")
           ) {
             const op = opStack.pop();
             const b = valStack.pop() as number;
