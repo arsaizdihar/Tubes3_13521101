@@ -1,10 +1,19 @@
 import { ChatStorage, PrismaClient } from "@prisma/client";
+import { Calculator } from "./calculator";
+import { DateQuestion } from "./date";
+import Hapus from "./hapus";
 import { StringMatching } from "./string";
 
 class Tambah {
   private regex = /^Tambah(?:kan)? pertanyaan +(.+) dengan jawaban +(.+)$/i;
   private _data: ChatStorage[] = [];
-  constructor(private db: PrismaClient, private algorithm: "KMP" | "BM") {}
+  constructor(
+    private db: PrismaClient,
+    private algorithm: "KMP" | "BM",
+    private calculator: Calculator,
+    private date: DateQuestion,
+    private hapus: Hapus
+  ) {}
 
   set data(data: ChatStorage[]) {
     this._data = data;
@@ -37,9 +46,14 @@ class Tambah {
         data: { answer: answer.trim(), question: question.trim() },
       });
       console.log(
-        `Pertanyaan ${question} sudah ada! Jawaban diupdate ke ${answer}`
+        `Pertanyaan "${question}" sudah ada! Jawaban diupdate ke "${answer}"`
       );
-      return `Pertanyaan ${question} sudah ada! jawaban diupdate ke ${answer}`;
+      return `Pertanyaan "${question}" sudah ada! jawaban diupdate ke "${answer}"`;
+    }
+    // check if question match other feature other than question
+    const checks = [this.calculator, this.date, this.hapus, this];
+    if (checks.some((check) => check.isMatch(question))) {
+      return `Pertanyaan "${question}" tidak valid karena merupakan bagian dari fitur lain selain pertanyaan.`;
     }
 
     // Add question and answer to database
@@ -48,9 +62,9 @@ class Tambah {
         data: { question: question.trim(), answer: answer.trim() },
       });
       console.log(
-        `Pertanyaan ${question} ditambahkan dengan jawaban ${answer}`
+        `Pertanyaan "${question}" ditambahkan dengan jawaban "${answer}"`
       );
-      return "Pertanyaan " + question + " telah ditambah";
+      return `Pertanyaan "${question}" telah ditambah.`;
     } catch (error) {
       console.error(error);
       return "Gagal menambahkan pertanyaan";

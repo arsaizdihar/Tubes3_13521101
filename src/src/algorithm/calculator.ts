@@ -107,17 +107,14 @@ export class Calculator implements BaseAlgorithm {
       }
       i++;
     }
-    console.log(opStack, valStack);
 
     while (opStack.length > 0) {
       const op = opStack.pop();
       const b = valStack.pop() as number;
       const a = valStack.pop() as number;
       const result = this.operation(a, b, op as string);
-      console.log(a, op, b, result);
       valStack.push(result);
     }
-    console.log(opStack, valStack);
 
     const result = parseFloat(valStack[0].toString());
     if (result % 1 === 0 || (result > -1 && result < 1)) {

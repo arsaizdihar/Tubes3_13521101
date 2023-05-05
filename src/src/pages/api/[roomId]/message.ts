@@ -22,10 +22,9 @@ handler.post(async (req, res) => {
   const calculator = new Calculator();
   const date = new DateQuestion();
   const question = new Question(reqAlg);
-  const tambah = new Tambah(prisma, reqAlg);
   const hapus = new Hapus(prisma, reqAlg);
+  const tambah = new Tambah(prisma, reqAlg, calculator, date, hapus);
   const lines = message.split(/\n+/);
-  console.log(lines);
   const responses: string[] = [];
   let anyAlgorithmMatch = false;
   for (const line of lines) {
