@@ -10,7 +10,7 @@ export class Calculator implements BaseAlgorithm {
 
     if (
       !/^[\d+\-*/^()\s.]+(\?)?$/.test(expression) ||
-      /[\+\-*/^]{2,}/.test(expression)
+      /[*/^]{2,}/.test(expression)
     ) {
       return "Sintaks persamaan tidak sesuai";
     }
@@ -36,14 +36,17 @@ export class Calculator implements BaseAlgorithm {
 
   private evaluate(expression: string) {
     const tokens =
-      expression.match(/(\d+(\.\d+)?|\d+(\.\d+)?|-)|([\+\-\*\/\^\(\)])/g) || [];
+      expression.match(
+        /(\d+\.\d+)|(\.\d+)|(\d+\.)|(\d+)|([\+\-\*\/\^\(\)])/g
+      ) || [];
     const opStack: string[] = [];
+    console.log(tokens);
     const valStack: Array<number | string> = [];
     let i = 0;
     let nextNegative = false;
 
     for (const token of tokens) {
-      if (/^\d+(\.\d+)?|-\d+(\.\d+)?$/.test(token)) {
+      if (/^(\d+\.\d+)|(\.\d+)|(\d+\.)|(\d+)$/.test(token)) {
         let val = parseFloat(token);
         if (nextNegative) {
           val = -val;
@@ -53,6 +56,9 @@ export class Calculator implements BaseAlgorithm {
       } else if (token === "(") {
         opStack.push(token);
       } else if (token === ")") {
+        if (!opStack.find((op) => op === "(")) {
+          throw new Error("Kurung tutup tidak sesuai");
+        }
         while (opStack[opStack.length - 1] !== "(") {
           const op = opStack.pop();
           const b = valStack.pop() as number;
@@ -77,8 +83,19 @@ export class Calculator implements BaseAlgorithm {
           }
         }
       } else {
-        if (valStack.length === 0 && token === "-") {
-          nextNegative = true;
+        if (
+          (token === "-" || token === "+") &&
+          opStack.reduce((a, b) => {
+            if (this.isOperator(b)) {
+              return a + 1;
+            }
+            return a;
+          }, 0) !==
+            valStack.length - 1
+        ) {
+          if (token === "-") {
+            nextNegative = !nextNegative;
+          }
         } else if (
           opStack.length === 0 ||
           opStack[opStack.length - 1] == "(" ||
@@ -108,6 +125,7 @@ export class Calculator implements BaseAlgorithm {
       }
       i++;
     }
+    console.log(opStack, valStack);
 
     if (opStack.length != valStack.length - 1) {
       throw new Error("Sintaks persamaan tidak sesuai");
@@ -125,7 +143,7 @@ export class Calculator implements BaseAlgorithm {
     if (result % 1 === 0) {
       return result;
     } else if (result > -1 && result < 1) {
-      return result.toFixed(1 - Math.floor(Math.log10(result)));
+      return result.toPrecision(2);
     } else {
       return Math.round((result + Number.EPSILON) * 100) / 100;
     }
