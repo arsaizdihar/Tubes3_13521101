@@ -6,7 +6,7 @@ export class Calculator implements BaseAlgorithm {
   constructor() {}
 
   getResponse(input: string) {
-    const expression = input.replace(/[^\d+\-*/()\^.\s]/g, "");
+    const expression = input.replace(/[^\d+\-*/()\^.\s-]/g, "");
 
     if (
       !/^[\d+\-*/^()\s.]+(\?)?$/.test(expression) ||
@@ -36,7 +36,7 @@ export class Calculator implements BaseAlgorithm {
 
   private evaluate(expression: string) {
     const tokens =
-      expression.match(/(\d+(\.\d+)?|-\d+(\.\d+)?)|([\+\-\*\/\^\(\)])/g) || [];
+      expression.match(/(\d+(\.\d+)?|-\d+(\.\d+)?|-)|([\+\-\*\/\^\(\)])/g) || [];
 
     const opStack: string[] = [];
     const valStack: Array<number | string> = [];
