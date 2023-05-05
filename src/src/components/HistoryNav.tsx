@@ -1,10 +1,33 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
+import { useNewChat } from "~/hooks/useNewChat";
 import { ApiHistory } from "~/utils/api-client";
 import NavButton from "./NavButton";
 
 function HistoryNav({ history }: { history: ApiHistory }) {
   const router = useRouter();
   const isActive = router.query.roomId === history.roomId;
+  const queryClient = useQueryClient();
+  const onNew = useNewChat();
+  const deleteMutation = useMutation(
+    async () => {
+      const res = await fetch(`/api/${history.roomId}`, {
+        method: "DELETE",
+      });
+      if (res.status === 200) {
+        return res.json();
+      }
+      throw new Error("Delete failed");
+    },
+    {
+      onSuccess() {
+        queryClient.refetchQueries(["histories"]);
+        if (router.query.roomId === history.roomId) {
+          onNew();
+        }
+      },
+    }
+  );
   return (
     <NavButton
       icon={
@@ -28,6 +51,7 @@ function HistoryNav({ history }: { history: ApiHistory }) {
       onClick={() =>
         router.push({ pathname: "/", search: `?roomId=${history.roomId}` })
       }
+      onDelete={deleteMutation.mutate}
     />
   );
 }
