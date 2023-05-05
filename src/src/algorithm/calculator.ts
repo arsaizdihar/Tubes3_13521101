@@ -36,14 +36,20 @@ export class Calculator implements BaseAlgorithm {
 
   private evaluate(expression: string) {
     const tokens =
-      expression.match(/(\d+(\.\d+)?|-\d+(\.\d+)?|-)|([\+\-\*\/\^\(\)])/g) || [];
-
+      expression.match(/(\d+(\.\d+)?|\d+(\.\d+)?|-)|([\+\-\*\/\^\(\)])/g) || [];
     const opStack: string[] = [];
     const valStack: Array<number | string> = [];
+    let i = 0;
+    let nextNegative = false;
 
     for (const token of tokens) {
       if (/^\d+(\.\d+)?|-\d+(\.\d+)?$/.test(token)) {
-        valStack.push(parseFloat(token));
+        let val = parseFloat(token);
+        if (nextNegative) {
+          val = -val;
+          nextNegative = false;
+        }
+        valStack.push(val);
       } else if (token === "(") {
         opStack.push(token);
       } else if (token === ")") {
@@ -55,38 +61,74 @@ export class Calculator implements BaseAlgorithm {
           valStack.push(result);
         }
         opStack.pop();
-      } else {
-        while (
-          opStack.length > 0 &&
-          this.getPrecedence(opStack[opStack.length - 1]) >=
-            this.getPrecedence(token)
-        ) {
-          const op = opStack.pop();
-          const b = valStack.pop() as number;
-          const a = valStack.pop() as number;
-          if (op === "/" && b === 0) {
-            throw new Error("Hasilnya tidak terdefinisi");
+        if (i + 1 < tokens.length && this.isOperator(tokens[i + 1])) {
+          const next = tokens[i + 1];
+          while (
+            opStack.length &&
+            this.isOperator(opStack[opStack.length - 1]) &&
+            this.getPrecedence(next) <=
+              this.getPrecedence(opStack[opStack.length - 1])
+          ) {
+            const op = opStack.pop();
+            const b = valStack.pop() as number;
+            const a = valStack.pop() as number;
+            const result = this.operation(a, b, op as string);
+            valStack.push(result);
           }
-          const result = this.operation(a, b, op as string);
-          valStack.push(result);
         }
-        opStack.push(token);
+      } else {
+        if (valStack.length === 0 && token === "-") {
+          nextNegative = true;
+        } else if (
+          opStack.length === 0 ||
+          opStack[opStack.length - 1] == "(" ||
+          this.getPrecedence(token) >
+            this.getPrecedence(opStack[opStack.length - 1])
+        ) {
+          opStack.push(token);
+        } else {
+          while (
+            opStack.length > 0 &&
+            opStack[opStack.length - 1] !== "(" &&
+            this.getPrecedence(opStack[opStack.length - 1]) >=
+              this.getPrecedence(token)
+          ) {
+            const op = opStack.pop();
+            const b = valStack.pop() as number;
+            const a = valStack.pop() as number;
+            if (op === "/" && b === 0) {
+              throw new Error("Hasilnya tidak terdefinisi");
+            }
+            const result = this.operation(a, b, op as string);
+            valStack.push(result);
+          }
+          opStack.push(token);
+        }
       }
+      i++;
     }
+    console.log(opStack, valStack);
 
     while (opStack.length > 0) {
       const op = opStack.pop();
       const b = valStack.pop() as number;
       const a = valStack.pop() as number;
       const result = this.operation(a, b, op as string);
+      console.log(a, op, b, result);
       valStack.push(result);
     }
+    console.log(opStack, valStack);
+
     const result = parseFloat(valStack[0].toString());
-    if (result % 1 === 0) {
+    if (result % 1 === 0 || (result > -1 && result < 1)) {
       return result;
     } else {
-      return result.toFixed(2);
+      return Math.round((result + Number.EPSILON) * 100) / 100;
     }
+  }
+
+  private isOperator(token: string) {
+    return /[\+\-\*\/\^]/.test(token);
   }
 
   private getPrecedence(operator: string) {
