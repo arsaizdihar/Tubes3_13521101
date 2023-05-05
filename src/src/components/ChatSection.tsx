@@ -23,7 +23,7 @@ function ChatSection() {
     <div className="relative flex h-full w-full flex-1 flex-col items-stretch overflow-hidden">
       <div className="flex-1 overflow-hidden">
         <ScrollToBottom className="h-full bg-gray-800">
-          <div className="flex flex-col items-center bg-gray-800 text-sm">
+          <div className="flex h-full flex-col items-center bg-gray-800 text-sm">
             {chats && !chats.length && loadingMessage == null && <HomeView />}
             {chats?.map((chat) => (
               <React.Fragment key={chat.id}>

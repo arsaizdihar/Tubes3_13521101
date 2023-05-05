@@ -25,8 +25,8 @@ const avatars = [
 
 function HomeView() {
   return (
-    <div className="w-full px-6 text-gray-800 dark:text-gray-100 md:flex md:h-full md:max-w-2xl md:flex-col lg:max-w-5xl">
-      <h1 className="mb-10 ml-auto mr-auto mt-6 flex items-center justify-center gap-2 text-center text-4xl font-semibold sm:mb-8 sm:mt-[20vh]">
+    <div className="flex w-full flex-1 flex-col justify-center px-6 pb-36 text-gray-800 dark:text-gray-100 md:max-w-2xl lg:max-w-5xl">
+      <h1 className="mb-10 ml-auto mr-auto mt-6 flex items-center justify-center gap-2 text-center text-4xl font-semibold sm:mb-8">
         ChitGPT
       </h1>
       <div className="flex justify-center space-x-5">
@@ -50,7 +50,7 @@ function HomeView() {
           );
         })}
       </div>
-      <div className="mt-10 grid grid-cols-7 gap-x-7 gap-y-4">
+      <div className="mt-10 hidden grid-cols-7 gap-x-7 gap-y-4 lg:grid">
         <HomeCard
           className="col-span-2 row-span-2"
           title="Jawab Pertanyaan!"
